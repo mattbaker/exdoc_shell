@@ -41,12 +41,14 @@ Still useful!
 
 List all modules and functions
 ```
-> ./exdoc | head -n 5
+> ./exdoc
 Access
 Access.all/0
 Access.at/1
 Access.elem/1
 Access.fetch/2
+
+... snip ...
 ```
 
 Display docs for a module
@@ -63,7 +65,8 @@ common data types used as enumerables:
 
     iex> Enum.map([1, 2, 3], fn x -> x * 2 end)
     [2, 4, 6]
-# ... snip ...
+
+... snip ...
 ```
 
 Display docs for a specific function in a module
@@ -84,4 +87,6 @@ truthy value.
 
     iex> Enum.filter([1, 2, 3], fn x -> rem(x, 2) == 0 end)
     [2]
+
+... snip ...
 ```
