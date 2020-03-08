@@ -36,7 +36,7 @@ mix escript.install
 ### Without FZF
 Still useful!
 
-List all modules & and functions
+List all modules and functions
 ```
 > ./exdoc | head -n 5
 Access
