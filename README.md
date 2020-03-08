@@ -26,7 +26,11 @@ mix escript.install
 ### With FZF
 
 ```
-./exdoc | fzf --preview './exdoc {}' --height 90% --bind='alt-n:preview-down,alt-p:preview-up' | xargs ./exdoc
+./exdoc \
+  | fzf --preview './exdoc {}' \
+        --height 90% \
+        --bind='alt-n:preview-down,alt-p:preview-up' \
+  | xargs ./exdoc
 ```
 
 ### Without FZF
