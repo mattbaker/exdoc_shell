@@ -8,7 +8,7 @@ defmodule CliExDoc.MixProject do
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      escript: [main_module: CliExDoc, strip_beams: false]
+      escript: [main_module: CliExDoc, name: :exdoc, strip_beams: false]
     ]
   end
 

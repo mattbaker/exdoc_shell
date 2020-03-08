@@ -6,14 +6,31 @@ Elixir docs on your command line for use with `fzf`.
 
 ## Build
 
+Build the CLI tool.
 ```
 mix escript.build
 ```
+
+If you want it in your path, you can also say this instead:
+
+```
+mix escript.install
+```
+
 ## Usage
+
+### With FZF
+
+```
+./exdoc | fzf --preview './exdoc {}' --height 90% --bind='alt-n:preview-down,alt-p:preview-up' | xargs ./exdoc
+```
+
+### Without FZF
+Still useful!
 
 List all modules & and functions
 ```
-> ./cli_ex_doc | head -n 5
+> ./exdoc | head -n 5
 Access
 Access.all/0
 Access.at/1
@@ -23,7 +40,7 @@ Access.fetch/2
 
 Display docs for a module
 ```
-> ./cli_ex_doc Enum
+> ./exdoc Enum
 
 Enum
 
@@ -40,7 +57,7 @@ common data types used as enumerables:
 
 Display docs for a specific function in a module
 ```
-> ./cli_ex_doc Enum.filter/2
+> ./exdoc Enum.filter/2
 
 def filter(enumerable, fun)
 
@@ -56,10 +73,4 @@ truthy value.
 
     iex> Enum.filter([1, 2, 3], fn x -> rem(x, 2) == 0 end)
     [2]
-```
-
-Use with FZF:
-
-```
-./cli_ex_doc | fzf --preview './cli_ex_doc {}' --height 90% --bind='alt-n:preview-down,alt-p:preview-up' | xargs ./cli_ex_doc
 ```
