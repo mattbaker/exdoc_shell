@@ -4,6 +4,10 @@ Elixir docs on your command line for use with `fzf`.
 
 ![demo of CLI ExDoc piped through FZF](assets/demo.gif)
 
+## Requirements
+
+Elixir 1.10
+
 ## Build
 
 Build the CLI tool.
