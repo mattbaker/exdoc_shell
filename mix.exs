@@ -1,14 +1,14 @@
-defmodule CliExDoc.MixProject do
+defmodule ExDocShell.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :cli_ex_doc,
+      app: :ex_doc_shell,
       version: "0.1.0",
-      elixir: "~> 1.10",
+      elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      escript: [main_module: CliExDoc, name: :exdoc, strip_beams: false]
+      escript: [main_module: ExDocShell, name: :exdoc_shell, strip_beams: false]
     ]
   end
 

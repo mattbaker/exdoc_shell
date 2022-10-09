@@ -1,13 +1,13 @@
-defmodule CliExDoc do
+defmodule ExDocShell do
   require IEx.Helpers
-  require CliExDoc.Macros
+  require ExDocShell.Macros
 
   def main(args) do
     IEx.configure(colors: [enabled: true])
 
     case args do
       [term] -> show_detail(term)
-      _ -> CliExDoc.Macros.list_modules()
+      _ -> ExDocShell.Macros.list_modules()
     end
   end
 
@@ -22,6 +22,11 @@ defmodule CliExDoc do
 
   def parse_mfa(term) when is_binary(term) do
     String.split(term, ".")
+    |> Enum.chunk_by(fn part -> Regex.match?(~r/^[A-Z].*/, part) end)
+    |> then(fn
+      [module] -> [Enum.join(module, ".")]
+      [module, [func]] -> [Enum.join(module, "."), func]
+    end)
     |> parse_mfa
   end
 

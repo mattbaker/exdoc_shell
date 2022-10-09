@@ -1,8 +1,8 @@
-defmodule CliExDocTest do
+defmodule ExDocShellTest do
   use ExUnit.Case
-  doctest CliExDoc
+  doctest ExDocShell
 
   test "greets the world" do
-    assert CliExDoc.hello() == :world
+    assert ExDocShell.hello() == :world
   end
 end

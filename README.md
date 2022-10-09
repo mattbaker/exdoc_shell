@@ -1,19 +1,13 @@
-# CLI ExDoc
+# ExDoc Shell
 
 Elixir docs on your command line for use with `fzf`.
 
-![demo of CLI ExDoc piped through FZF](assets/demo.gif)
-
-
-## Requirements
-
-Elixir 1.10
-
-Status: hax
+![demo of ExDoc Shell piped through FZF](assets/demo.gif)
 
 ## Build
 
 Build the CLI tool.
+
 ```
 mix escript.build
 ```
@@ -24,24 +18,31 @@ If you want it in your path, you can also say this instead:
 mix escript.install
 ```
 
+If you are using `asdf` you will need to `asdf reshim` afterwards.
+
 ## Usage
 
 ### With FZF
 
 ```
-./exdoc \
-  | fzf --preview './exdoc {}' \
-        --height 90% \
+exdoc_shell \
+  | fzf --preview='exdoc_shell {}' \
+        --preview-window=right,75%,wrap \
+        --no-info \
+        --height=90% \
         --bind='alt-n:preview-down,alt-p:preview-up' \
-  | xargs ./exdoc
+  | xargs exdoc_shell
 ```
+
+Consider moving the above to a shell script on your path (or an alias) for convenience.
+Mine is just called `exdoc` for brevity.
 
 ### Without FZF
 Still useful!
 
 List all modules and functions
 ```
-> ./exdoc
+> exdoc_shell
 Access
 Access.all/0
 Access.at/1
@@ -53,7 +54,7 @@ Access.fetch/2
 
 Display docs for a module
 ```
-> ./exdoc Enum
+> exdoc_shell Enum
 
 Enum
 
@@ -71,7 +72,7 @@ common data types used as enumerables:
 
 Display docs for a specific function in a module
 ```
-> ./exdoc Enum.filter/2
+> exdoc_shell Enum.filter/2
 
 def filter(enumerable, fun)
 
