@@ -2,7 +2,7 @@
 
 Elixir docs on your command line for use with `fzf`.
 
-![demo of ExDoc Shell piped through FZF](assets/demo.gif)
+![demo of ExDoc Shell piped through FZF](assets/demo.svg)
 
 ## Build
 
