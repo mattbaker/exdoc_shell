@@ -25,13 +25,7 @@ defmodule ExDocShell.Macros do
       |> Stream.flat_map(fn module ->
         [
           Atom.to_string(module)
-          | IEx.Autocomplete.exports(module)
-            |> Enum.filter(fn {func, arity} ->
-              MapSet.member?(mfas_with_docs, {module, func, arity})
-            end)
-            |> Enum.map(fn {func, arity} ->
-              {Atom.to_string(module), {Atom.to_string(func), to_string(arity)}}
-            end)
+          | exports(module, mfas_with_docs) ++ callbacks(module, mfas_with_docs)
         ]
       end)
       |> Stream.filter(fn
@@ -49,11 +43,41 @@ defmodule ExDocShell.Macros do
     end
   end
 
+  defp exports(mod, mfas_with_docs) do
+    IEx.Autocomplete.exports(mod)
+    |> Enum.filter(fn {func, arity} ->
+      MapSet.member?(mfas_with_docs, {mod, func, arity})
+    end)
+    |> Enum.map(fn {func, arity} ->
+      {Atom.to_string(mod), {Atom.to_string(func), to_string(arity)}}
+    end)
+  end
+
+  defp callbacks(mod, mfas_with_docs) do
+    case Code.Typespec.fetch_callbacks(mod) do
+      {:ok, callbacks} ->
+        for {name_arity, _} <- callbacks do
+          {_kind, name, arity} = IEx.Introspection.translate_callback_name_arity(name_arity)
+
+          {name, arity}
+        end
+
+      :error ->
+        []
+    end
+    |> Enum.filter(fn {cb, arity} ->
+      MapSet.member?(mfas_with_docs, {mod, cb, arity})
+    end)
+    |> Enum.map(fn {cb, arity} ->
+      {Atom.to_string(mod), {Atom.to_string(cb), to_string(arity)}}
+    end)
+  end
+
   defp visibilities(mod) do
     case Code.fetch_docs(mod) do
       {:docs_v1, _, _, _, _, _, docs} ->
         for {{kind, func, arity}, _, _, doc, _} <- docs,
-            kind in [:macro, :function] and doc != :hidden do
+            kind in [:macro, :function, :callback] and doc != :hidden do
           {mod, func, arity}
         end
 

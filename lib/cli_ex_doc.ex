@@ -3,7 +3,8 @@ defmodule ExDocShell do
   require ExDocShell.Macros
 
   def main(args) do
-    IEx.configure(colors: [enabled: true])
+    {width, _} = System.get_env("EXDOC_WIDTH", "80") |> Integer.parse()
+    IEx.configure(colors: [enabled: true], width: width)
 
     case args do
       [term] -> show_detail(term)
@@ -13,9 +14,11 @@ defmodule ExDocShell do
 
   def show_detail(term) do
     parse_mfa(term)
-    |> validate_mfa()
+    |> tag_mfa()
     |> case do
-      {:ok, mfa} -> IEx.Introspection.h(mfa)
+      {:function, mfa} -> IEx.Introspection.h(mfa)
+      {:module, mfa} -> IEx.Introspection.h(mfa)
+      {:callback, mfa} -> IEx.Introspection.b(mfa)
       _ -> nil
     end
   end
@@ -47,21 +50,52 @@ defmodule ExDocShell do
     {String.to_atom("Elixir." <> module_name), String.to_atom(func), String.to_integer(arity)}
   end
 
-  def validate_mfa(mfa), do: if(valid_mfa?(mfa), do: {:ok, mfa}, else: :error)
-
-  def valid_mfa?({m, f, a}) do
-    module_loaded?(m) &&
-      m.__info__(:functions) |> Enum.member?({f, a})
+  def tag_mfa(mfa) do
+    cond do
+      is_callback?(mfa) -> {:callback, mfa}
+      is_function?(mfa) -> {:function, mfa}
+      is_module?(mfa) -> {:module, mfa}
+      true -> :error
+    end
   end
 
-  def valid_mfa?({m, f}) do
+  def is_callback?({m, f, a}) do
+    module_loaded?(m) &&
+      Code.Typespec.fetch_callbacks(m)
+      |> then(fn {:ok, callbacks} -> callbacks end)
+      |> Enum.map(fn {name_arity, _} -> name_arity end)
+      |> Enum.member?({f, a})
+  end
+
+  def is_callback?({m, f}) do
+    module_loaded?(m) &&
+      Code.Typespec.fetch_callbacks(m)
+      |> then(fn {:ok, callbacks} -> callbacks end)
+      |> Enum.map(fn {name_arity, _} -> name_arity end)
+      |> Enum.map(fn {func, _} -> func end)
+      |> Enum.member?(f)
+  end
+
+  def is_callback?(_m), do: false
+
+  def is_function?({m, f, a}) do
+    module_loaded?(m) && m.__info__(:functions) |> Enum.member?({f, a})
+  end
+
+  def is_function?({m, f}) do
     module_loaded?(m) &&
       m.__info__(:functions)
       |> Enum.map(fn {func, _} -> func end)
       |> Enum.member?(f)
   end
 
-  def valid_mfa?(m) do
+  def is_function?(_m), do: false
+
+  def is_module?({_m, _f, _a}), do: false
+
+  def is_module?({_m, _f}), do: false
+
+  def is_module?(m) do
     module_loaded?(m)
   end
 

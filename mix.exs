@@ -5,7 +5,7 @@ defmodule ExDocShell.MixProject do
     [
       app: :ex_doc_shell,
       version: "0.1.0",
-      elixir: "~> 1.14",
+      elixir: "~> 1.17",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       escript: [main_module: ExDocShell, name: :exdoc_shell, strip_beams: false]
